@@ -1,493 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Sai Dental Care — Dashboard</title>
-<style>
-  /* ===== Reset & Globals ===== */
-  :root{
-    --accent:#0ea5a4; /* teal */
-    --accent-2:#ffb703; /* warm */
-    --bg:#0f172a;
-    --card:#0b1220;
-    --text:#e6eef6;
-    --muted:#9aa7b2;
-    --glass: rgba(255,255,255,0.04);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-  body{background:linear-gradient(180deg,var(--bg),#071026);color:var(--text);-webkit-font-smoothing:antialiased;}
-  a{color:inherit}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sai Dental Care</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #f8fcff;
+      color: #333;
+    }
+    header {
+      background: rgb(0, 123, 255);
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { margin: 0; font-size: 22px; }
+    nav a {
+      color: white;
+      margin-left: 20px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    nav a:hover { color: rgb(200,230,255); }
 
-  /* ===== Header ===== */
-  header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(6px)}
-  .brand{display:flex;gap:12px;align-items:center}
-  .logo{
-    width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent-2),var(--accent));
-    display:flex;align-items:center;justify-content:center;font-weight:700;color:#072;box-shadow:0 6px 18px rgba(0,0,0,0.6);
-  }
-  header h1{font-size:16px;margin:0}
-  .header-actions{display:flex;gap:10px;align-items:center}
+    .hero {
+      padding: 60px 20px;
+      text-align: center;
+      background: linear-gradient(to right, #e6f3ff, #ffffff);
+    }
+    .hero h2 {
+      font-size: 32px;
+      color: rgb(0, 123, 255);
+    }
+    .hero p {
+      font-size: 18px;
+      color: #444;
+    }
 
-  /* header controls */
-  .btn,button{background:var(--glass);color:var(--text);border:1px solid rgba(255,255,255,0.03);padding:8px 12px;border-radius:8px;cursor:pointer}
-  .btn:hover{transform:translateY(-2px)}
-  .toggle{display:inline-flex;align-items:center;gap:8px}
-  .segmented{background:transparent;border-radius:8px;overflow:hidden;display:inline-flex}
-  .segmented button{padding:8px 12px;border:none;background:transparent;color:var(--muted)}
-  .segmented button.active{background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));color:var(--text)}
+    .section {
+      padding: 40px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+    .section h2 {
+      color: rgb(0, 123, 255);
+      margin-bottom: 20px;
+      border-left: 5px solid rgb(0, 123, 255);
+      padding-left: 10px;
+    }
 
-  /* ===== Layout ===== */
-  .layout{display:grid;grid-template-columns:260px 1fr;gap:20px;height:calc(100vh - 72px);padding:18px}
-  .sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03)}
-  .sidebar h3{margin:0 0 12px 0;color:var(--accent-2)}
-  .nav{display:flex;flex-direction:column;gap:8px}
-  .nav a{padding:10px;border-radius:8px;color:var(--muted);display:flex;gap:10px;align-items:center}
-  .nav a:hover{background:rgba(255,255,255,0.02);color:var(--text)}
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border: 1px solid #dceeff;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-6px);
+    }
+    .card img, .card video {
+      width: 100%;
+      height: 180px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .card h3 {
+      margin: 12px 0 6px;
+      color: rgb(0, 123, 255);
+    }
 
-  /* content area */
-  .content{overflow:auto;padding:6px}
-  .row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
-  .card{background:var(--card);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
-  .kpi{display:flex;flex-direction:column;gap:8px}
-  .kpi .value{font-size:20px;font-weight:700}
-  .kpi .label{color:var(--muted);font-size:13px}
-
-  /* services & gallery */
-  .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-  .service{background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));padding:12px;border-radius:10px;text-align:center}
-  .service h4{margin:6px 0 4px 0;font-size:14px}
-  .service p{margin:0;color:var(--muted);font-size:13px}
-
-  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  .thumb{position:relative;border-radius:10px;overflow:hidden;cursor:pointer;min-height:120px;background-size:cover;background-position:center}
-  .thumb .label{position:absolute;left:8px;bottom:8px;background:linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));padding:6px 8px;border-radius:6px;font-size:12px}
-
-  /* video/embed area */
-  .video-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
-  .video-box{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));border-radius:10px;padding:10px}
-  iframe,video{width:100%;height:100%;border-radius:8px;border:none}
-
-  /* contact */
-  .contact-form input,.contact-form textarea{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--text)}
-  .contact-form label{font-size:13px;color:var(--muted)}
-
-  /* modal */
-  .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:2000}
-  .modal.open{display:flex}
-  .modal .box{width:min(1100px,95%);background:linear-gradient(180deg,#01040a, #061222);padding:18px;border-radius:12px}
-  .modal .box .close{float:right;cursor:pointer}
-  .modal .media{height:520px}
-  .muted{color:var(--muted);font-size:13px}
-
-  /* small screens */
-  @media (max-width:980px){
-    .layout{grid-template-columns:1fr;height:auto}
-    .row{grid-template-columns:repeat(2,1fr)}
-    .gallery{grid-template-columns:repeat(2,1fr)}
-    .video-grid{grid-template-columns:1fr}
-    .sidebar{order:2}
-  }
-  @media (max-width:560px){
-    .row{grid-template-columns:1fr}
-    .gallery{grid-template-columns:1fr}
-  }
-
-  /* ===== Light Theme (toggle) ===== */
-  body.light{
-    --bg:#f4f7fb;
-    --card:#ffffff;
-    --text:#081024;
-    --muted:#6b7280;
-    --glass: rgba(2,6,23,0.03);
-  }
-</style>
+    footer {
+      background: rgb(0, 123, 255);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 30px;
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
   <header>
-    <div class="brand">
-      <div class="logo">SD</div>
-      <div>
-        <h1>Sai Dental Care</h1>
-        <div class="muted" style="font-size:12px">Advanced Dental Care & Oral Surgery — Dashboard</div>
-      </div>
-    </div>
-
-    <div class="header-actions">
-      <!-- Version toggle: two versions -->
-      <div class="segmented" role="tablist" aria-label="Versions">
-        <button id="verA" class="active">Version A (Lite)</button>
-        <button id="verB">Version B (Advanced)</button>
-      </div>
-
-      <!-- Theme toggle -->
-      <div class="toggle">
-        <button id="themeBtn" class="btn">🌙 Dark</button>
-      </div>
-    </div>
+    <h1>🦷 Sai Dental Care</h1>
+    <nav>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#machinery">Machinery</a>
+      <a href="#videos">Videos</a>
+      <a href="#contact">Contact</a>
+    </nav>
   </header>
 
-  <!-- Layout -->
-  <div class="layout">
-    <!-- Sidebar (shared) -->
-    <aside class="sidebar">
-      <h3>Hospital Menu</h3>
-      <nav class="nav">
-        <a href="#overview" data-scroll>🏠 Overview</a>
-        <a href="#services" data-scroll>🦷 Services</a>
-        <a href="#machinery" data-scroll>🔬 Machinery</a>
-        <a href="#ai" data-scroll>🤖 AI / Videos</a>
-        <a href="#contact" data-scroll>✉ Contact</a>
-      </nav>
-
-      <hr style="margin:14px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
-
-      <div style="display:flex;gap:8px;align-items:center">
-        <div style="flex:1">
-          <div class="muted">Openings</div>
-          <div style="font-weight:700">Mon - Sat · 9:00 - 18:00</div>
-        </div>
-        <div style="text-align:right">
-          <div class="muted">Emergency</div>
-          <div style="color:var(--accent);font-weight:700">+91 90000 12345</div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Content -->
-    <main class="content">
-      <!-- VERSION A: Lite (default visible) -->
-      <section id="versionA" class="version">
-        <!-- KPIs Row -->
-        <div class="row">
-          <div class="card kpi">
-            <div class="value">1,026</div>
-            <div class="label">Patients this month</div>
-          </div>
-          <div class="card kpi">
-            <div class="value">124</div>
-            <div class="label">Completed Procedures</div>
-          </div>
-          <div class="card kpi">
-            <div class="value">4.9 ★</div>
-            <div class="label">Average Rating</div>
-          </div>
-        </div>
-
-        <!-- Services -->
-        <div class="card" id="overview">
-          <h3 style="margin-top:0">Welcome to Sai Dental Care</h3>
-          <p class="muted">We provide modern dental treatments with advanced equipment and patient-centric care. Choose a section from the sidebar to explore VFX (?) — (jk) — equipment, AI demo videos and contact details.</p>
-          <div style="margin-top:12px" id="services">
-            <h4 style="margin:8px 0">Our Services</h4>
-            <div class="services">
-              <div class="service">
-                <div style="font-weight:700">Implants</div>
-                <p>Precision titanium implants with guided surgery</p>
-              </div>
-              <div class="service">
-                <div style="font-weight:700">Orthodontics</div>
-                <p>Invisible braces & clear aligners</p>
-              </div>
-              <div class="service">
-                <div style="font-weight:700">Cosmetic Dentistry</div>
-                <p>Veneers, whitening & smile design</p>
-              </div>
-              <div class="service">
-                <div style="font-weight:700">Endodontics</div>
-                <p>Root canal therapy with rotary systems</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Machinery gallery -->
-        <div class="card" style="margin-top:14px">
-          <h4>Machinery & Equipment</h4>
-          <p class="muted">High-quality dental units, cone-beam CT, rotary endo systems and sterilization suites.</p>
-          <div class="gallery" id="machinery">
-            <!-- Replace background-image URLs with your own machinery photos -->
-            <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1588776814546-1b7a7bd2d8e1?w=1200&q=80');" data-type="image" data-src="https://images.unsplash.com/photo-1588776814546-1b7a7bd2d8e1?w=1400&q=90">
-              <div class="label">Operatory Chair</div>
-            </div>
-            <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1580281657524-506b6ad14f4d?w=1200&q=80');" data-type="image" data-src="https://images.unsplash.com/photo-1580281657524-506b6ad14f4d?w=1400&q=90">
-              <div class="label">Sterilization Unit</div>
-            </div>
-            <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1580741026166-2bd0d3e6b4b2?w=1200&q=80');" data-type="image" data-src="https://images.unsplash.com/photo-1580741026166-2bd0d3e6b4b2?w=1400&q=90">
-              <div class="label">Cone Beam CT</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Contact -->
-        <div class="card" style="margin-top:14px" id="contact">
-          <h4>Contact & Appointments</h4>
-          <div style="display:grid;grid-template-columns:1fr 320px;gap:12px;margin-top:8px">
-            <div>
-              <label class="muted">Message to Sai Dental Care</label>
-              <div class="contact-form">
-                <input id="a_name" placeholder="Your name" />
-                <input id="a_phone" placeholder="Phone / WhatsApp" />
-                <input id="a_email" placeholder="Email" />
-                <textarea id="a_msg" rows="4" placeholder="Reason for visit / message"></textarea>
-                <div style="margin-top:8px">
-                  <button class="btn" id="a_send">Request Appointment</button>
-                </div>
-              </div>
-            </div>
-            <div class="card" style="background:linear-gradient(90deg, rgba(14,165,164,0.06), rgba(255,183,3,0.03));">
-              <h4 style="margin-top:0">Quick Info</h4>
-              <div class="muted">Address</div>
-              <div style="font-weight:700">Sai Dental Care, MG Road, Hyderabad</div>
-              <div style="margin-top:12px" class="muted">Emergency</div>
-              <div style="font-weight:700;color:var(--accent)">+91 90000 12345</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- VERSION B: Advanced (hidden by default) -->
-      <section id="versionB" class="version" style="display:none">
-        <div class="row">
-          <div class="card kpi">
-            <div class="value">Realtime Patients</div>
-            <div class="label">Live queue: <span id="liveQueue">3</span> patients</div>
-          </div>
-          <div class="card kpi">
-            <div class="value">Today's Ops</div>
-            <div class="label">Surgeries scheduled: 5</div>
-          </div>
-          <div class="card kpi">
-            <div class="value">Satisfaction</div>
-            <div class="label">Avg feedback: 4.8</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h4 style="margin-top:0">AI Assistant — Case Preview (Demo)</h4>
-          <p class="muted">A demo "AI-generated" walkthrough video shows how our imaging combines with 3D planning. Replace with your AI-generated video when available.</p>
-
-          <div class="video-grid" style="margin-top:12px">
-            <div class="video-box" style="height:320px">
-              <!-- Demo AI-generated video (placeholder) -->
-              <video controls preload="metadata" id="aiDemo">
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                Your browser does not support HTML5 video.
-              </video>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:12px">
-              <div class="video-box" style="height:150px">
-                <h4 style="margin:6px 0">Realtime Stream (Placeholder)</h4>
-                <!-- You can replace the src with an actual live embed or a WebRTC feed -->
-                <iframe src="https://www.youtube.com/embed/live_stream?channel=UC4R8DWoMoI7CAwX8_LjQHig" title="Realtime stream" allowfullscreen></iframe>
-              </div>
-
-              <div class="video-box" style="height:150px">
-                <h4 style="margin:6px 0">Procedure Clips</h4>
-                <video controls preload="metadata" style="height:100%">
-                  <source src="https://www.w3schools.com/html/movie.mp4" type="video/mp4">
-                </video>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Extended machinery + details -->
-        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:14px">
-          <div class="card">
-            <h4 style="margin-top:0">Machinery Gallery (Advanced)</h4>
-            <div class="gallery" id="machGallery">
-              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1588776814546-1b7a7bd2d8e1?w=1200&q=80');" data-type="image" data-src="https://images.unsplash.com/photo-1588776814546-1b7a7bd2d8e1?w=1600&q=90">
-                <div class="label">Operatory — 1</div>
-              </div>
-              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1580741026166-2bd0d3e6b4b2?w=1200&q=80');" data-type="image" data-src="https://images.unsplash.com/photo-1580741026166-2bd0d3e6b4b2?w=1600&q=90">
-                <div class="label">CBCT Scanner</div>
-              </div>
-              <div class="thumb" style="background-image:url('https://images.unsplash.com/photo-1580281657524-506b6ad14f4d?w=1200&q=80');" data-type="image" data-src="https://images.unsplash.com/photo-1580281657524-506b6ad14f4d?w=1600&q=90">
-                <div class="label">Autoclave & Steri</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card">
-            <h4 style="margin-top:0">Clinic Statistics</h4>
-            <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
-              <div><strong>Average Turnaround</strong><div class="muted">30 minutes / consultation</div></div>
-              <div><strong>Instruments Sterilized</strong><div class="muted">2,400 / month</div></div>
-              <div><strong>AI Cases Processed</strong><div class="muted">Demo only — replace with real count</div></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Advanced Contact / Booking -->
-        <div class="card" style="margin-top:14px">
-          <h4 style="margin-top:0">Request Specialized Care</h4>
-          <div style="display:grid;grid-template-columns:1fr 260px;gap:12px;margin-top:8px">
-            <div>
-              <label class="muted">Patient Details</label>
-              <input id="b_name" placeholder="Full name" />
-              <input id="b_phone" placeholder="Phone" />
-              <input id="b_email" placeholder="Email" />
-              <textarea id="b_case" rows="3" placeholder="Short case description"></textarea>
-              <div style="margin-top:8px">
-                <button class="btn" id="b_send">Request Specialist Review</button>
-              </div>
-            </div>
-
-            <div style="display:flex;flex-direction:column;gap:10px">
-              <div class="card" style="background:linear-gradient(90deg, rgba(14,165,164,0.05), rgba(255,183,3,0.03));">
-                <h4 style="margin-top:0">Fast Facts</h4>
-                <div class="muted">We accept insurance & cash payments</div>
-                <div style="font-weight:700;margin-top:8px">Expert Endodontists · Oral Surgeons</div>
-              </div>
-
-              <div class="card">
-                <h4 style="margin-top:0">Upload Images</h4>
-                <p class="muted">You can upload X-rays or photos during booking (demo: not actually uploading here)</p>
-                <button class="btn" id="dummyUpload">Choose Files (demo)</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-    </main>
+  <div class="hero">
+    <h2>Your Smile, Our Priority</h2>
+    <p>Advanced Dental Care with Modern Technology</p>
   </div>
 
-  <!-- Modal for media viewer -->
-  <div class="modal" id="mediaModal" role="dialog" aria-hidden="true">
-    <div class="box">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div style="font-weight:700">Preview</div>
-        <div class="close" id="closeModal" style="cursor:pointer">✖</div>
-      </div>
-      <div class="media" id="modalContent" style="margin-top:10px">
-        <!-- content injected by JS -->
+  <section id="about" class="section">
+    <h2>About Us</h2>
+    <p>Sai Dental Care is a modern dental hospital providing specialized services including cosmetic dentistry, orthodontics, and advanced root canal treatments.</p>
+  </section>
+
+  <section id="services" class="section">
+    <h2>Our Services</h2>
+    <div class="cards">
+      <div class="card"><h3>Root Canal</h3><p>Painless and advanced treatment.</p></div>
+      <div class="card"><h3>Teeth Whitening</h3><p>Safe whitening for a brighter smile.</p></div>
+      <div class="card"><h3>Braces & Aligners</h3><p>Modern orthodontics for all ages.</p></div>
+    </div>
+  </section>
+
+  <section id="machinery" class="section">
+    <h2>Machinery</h2>
+    <div class="cards">
+      <div class="card"><img src="https://images.unsplash.com/photo-1588776814546-ec7ec32a3370?w=600" alt="Dental Machine"><h3>3D X-Ray Scanner</h3></div>
+      <div class="card"><img src="https://images.unsplash.com/photo-1606813902779-bd2e9a8b7dd0?w=600" alt="Dental Chair"><h3>Modern Dental Chair</h3></div>
+    </div>
+  </section>
+
+  <section id="videos" class="section">
+    <h2>AI & Real-time Videos</h2>
+    <div class="cards">
+      <div class="card">
+        <video controls>
+          <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        </video>
+        <h3>Dental Procedure Simulation</h3>
       </div>
     </div>
-  </div>
+  </section>
 
-<script>
-  // ---------- Version switching ----------
-  const verA = document.getElementById('verA');
-  const verB = document.getElementById('verB');
-  const vAsec = document.getElementById('versionA');
-  const vBsec = document.getElementById('versionB');
+  <section id="contact" class="section">
+    <h2>Contact Us</h2>
+    <p>📍 Location: Hyderabad, India</p>
+    <p>📞 Phone: +91 98765 43210</p>
+  </section>
 
-  function setVersion(v){
-    if(v === 'A'){
-      verA.classList.add('active'); verB.classList.remove('active');
-      vAsec.style.display = ''; vBsec.style.display = 'none';
-    } else {
-      verA.classList.remove('active'); verB.classList.add('active');
-      vAsec.style.display = 'none'; vBsec.style.display = '';
-    }
-  }
-  verA.addEventListener('click', ()=> setVersion('A'));
-  verB.addEventListener('click', ()=> setVersion('B'));
-
-  // ---------- Theme toggle ----------
-  const themeBtn = document.getElementById('themeBtn');
-  themeBtn.addEventListener('click', ()=>{
-    document.body.classList.toggle('light');
-    if(document.body.classList.contains('light')){
-      themeBtn.textContent = '🌞 Light';
-    } else {
-      themeBtn.textContent = '🌙 Dark';
-    }
-  });
-
-  // ---------- Smooth scroll for sidebar nav -------
-  document.querySelectorAll('[data-scroll]').forEach(el=>{
-    el.addEventListener('click', (e)=>{
-      e.preventDefault();
-      const href = el.getAttribute('href');
-      const target = document.querySelector(href);
-      if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
-    });
-  });
-
-  // ---------- Modal gallery (reusable for both versions) ----------
-  const modal = document.getElementById('mediaModal');
-  const modalContent = document.getElementById('modalContent');
-  const closeModal = document.getElementById('closeModal');
-
-  function openMedia(type, src){
-    modalContent.innerHTML = '';
-    if(type === 'image'){
-      const img = document.createElement('img');
-      img.src = src;
-      img.style.maxWidth = '100%';
-      img.style.maxHeight = '100%';
-      img.style.borderRadius = '8px';
-      modalContent.appendChild(img);
-    } else if(type === 'video'){
-      const v = document.createElement('video');
-      v.src = src;
-      v.controls = true;
-      v.autoplay = true;
-      v.style.width = '100%';
-      v.style.height = '100%';
-      v.style.borderRadius = '8px';
-      modalContent.appendChild(v);
-    }
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden','false');
-  }
-  closeModal.addEventListener('click', ()=> {
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden','true');
-    modalContent.innerHTML = '';
-  });
-  modal.addEventListener('click', (e)=>{
-    if(e.target === modal) { closeModal.click(); }
-  });
-
-  // attach click handlers for thumbs
-  document.querySelectorAll('.thumb').forEach(t=>{
-    t.addEventListener('click', ()=>{
-      const type = t.dataset.type || 'image';
-      const src = t.dataset.src || '';
-      openMedia(type, src);
-    });
-  });
-
-  // ---------- Contact / form demo buttons ----------
-  function showToast(msg){
-    alert(msg); // simple demo. Replace with custom toast if needed.
-  }
-  document.getElementById('a_send').addEventListener('click', ()=>{
-    const n=document.getElementById('a_name').value.trim();
-    if(!n) return showToast('Enter your name to request an appointment.');
-    showToast('Appointment request sent. We will contact you soon — demo only.');
-  });
-  document.getElementById('b_send').addEventListener('click', ()=>{
-    const n=document.getElementById('b_name').value.trim();
-    if(!n) return showToast('Enter your name to request specialist review.');
-    showToast('Specialist review requested. Demo only.');
-  });
-  document.getElementById('dummyUpload').addEventListener('click', ()=> showToast('Upload demo — replace with real upload handling.'));
-
-  // ---------- Live queue demo (simple simulated updates) ----------
-  const liveQueue = document.getElementById('liveQueue');
-  let queueCount = 3;
-  setInterval(()=>{
-    // simulate small queue changes
-    const delta = Math.floor(Math.random()*3)-1; // -1/0/1
-    queueCount = Math.max(0, Math.min(12, queueCount + delta));
-    liveQueue.textContent = queueCount;
-  }, 4500);
-
-  // ---------- Accessibility: Keyboard close modal ----------
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape' && modal.classList.contains('open')) closeModal.click();
-  });
-
-  // Initialize default state
-  setVersion('A');
-</script>
+  <footer>© 2025 Sai Dental Care | All Rights Reserved</footer>
 </body>
 </html>
